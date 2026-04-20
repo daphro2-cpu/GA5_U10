@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Unit 10 – Week 26 | Online Practice</title>
+  <style>
+    :root{
+      --bg1:#06142a; --bg2:#0b2a4a; --card:#0f1f3b; --stroke:rgba(255,255,255,.10);
+      --text:#e9f0ff; --muted:rgba(233,240,255,.72); --accent:#42d3ff; --good:#43f18a;
+      --bad:#ff6b6b; --btn:#142b52; --btnHover:#18335f; --pill:rgba(255,255,255,.08);
+      --shadow:0 18px 50px rgba(0,0,0,.45); --radius:22px; --warn:#ffd36b;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh; font-family:"Century Gothic","Tw Cen MT","Trebuchet MS",Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(66,211,255,.18), transparent 55%),
+        radial-gradient(900px 600px at 85% 15%, rgba(124,92,255,.18), transparent 55%),
+        radial-gradient(900px 700px at 50% 110%, rgba(255,199,66,.10), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      display:flex; align-items:center; justify-content:center; padding:22px;
+    }
+    .wrap{ width:min(1120px, 96vw); }
+    .topbar{
+      background:rgba(255,255,255,.05); border:1px solid var(--stroke); border-radius:var(--radius);
+      padding:16px 18px; display:flex; gap:14px; align-items:center; justify-content:space-between;
+      box-shadow:var(--shadow); backdrop-filter:blur(8px);
+    }
+    .brand{ display:flex; gap:14px; align-items:center; }
+    .logo{
+      width:54px;height:54px;border-radius:14px; background:rgba(255,255,255,.06); border:1px solid var(--stroke);
+      display:flex;align-items:center;justify-content:center; overflow:hidden; flex:0 0 auto;
+    }
+    .logo img{ width:100%; height:100%; object-fit:contain; padding:8px; }
+    .titleblock h1{ margin:0; font-size:clamp(20px, 2.4vw, 30px); }
+    .titleblock .sub{ margin-top:4px; color:var(--muted); font-size:14px; }
+    .stats{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
+    .pill{ background:var(--pill); border:1px solid var(--stroke); border-radius:999px; padding:10px 12px; font-size:14px; color:var(--muted); }
+    .pill strong{ color:var(--text); }
+    .grid{ margin-top:16px; display:grid; grid-template-columns:1.8fr 1fr; gap:16px; }
+    @media (max-width:900px){ .grid{grid-template-columns:1fr} }
+    .card{ background:rgba(15,31,59,.76); border:1px solid var(--stroke); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+    .cardHeader{ padding:18px 18px 12px; border-bottom:1px solid var(--stroke); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0)); }
+    .kicker{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
+    .sectionLabel{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:rgba(66,211,255,.10); border:1px solid rgba(66,211,255,.24); font-size:14px; font-weight:700; }
+    .qMeta{ color:var(--muted); font-size:14px; }
+    .hintBox{ margin-top:10px; padding:14px 16px; border-radius:16px; background:rgba(0,0,0,.18); border:1px solid rgba(255,255,255,.10); color:var(--muted); font-size:14px; }
+    .qText{ padding:16px 18px 6px; font-size:18px; line-height:1.45; }
+    .prompt{ color:var(--muted); font-size:14px; margin-bottom:8px; text-transform:uppercase; letter-spacing:.9px; }
+    .main{ font-size:20px; }
+    .options{ padding:10px 18px 16px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    @media (max-width:560px){ .options{grid-template-columns:1fr} }
+    .optBtn{
+      text-align:left; padding:14px; border-radius:16px; background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12); color:var(--text); font-size:16px; cursor:pointer;
+      transition:transform .08s ease, background .08s ease, border-color .08s ease;
+    }
+    .optBtn:hover{ transform:translateY(-1px); background:rgba(255,255,255,.085); border-color:rgba(255,255,255,.18); }
+    .optBtn:disabled{ cursor:default; opacity:.75; transform:none; }
+    .feedback{ padding:0 18px 12px; min-height:44px; font-size:15px; color:var(--muted); }
+    .feedback.good{ color:var(--good); }
+    .feedback.bad{ color:var(--bad); }
+    .feedback.warn{ color:var(--warn); }
+    .controls{ padding:0 18px 18px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
+    .leftControls{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .btn{ border:1px solid rgba(255,255,255,.14); background:var(--btn); color:var(--text); padding:12px 14px; border-radius:999px; cursor:pointer; font-size:14px; }
+    .btn:hover{ background:var(--btnHover); }
+    .btn.primary{ border-color:rgba(66,211,255,.35); background:rgba(66,211,255,.14); }
+    .btn.primary:hover{ background:rgba(66,211,255,.20); }
+    .btn:disabled{ opacity:.55; cursor:default; }
+    .side{ padding:18px; }
+    .side h3{ margin:0 0 10px; font-size:18px; }
+    .small{ color:var(--muted); font-size:14px; line-height:1.45; margin-bottom:12px; }
+    .listBox{
+      background:rgba(0,0,0,.18); border:1px solid rgba(255,255,255,.10); border-radius:16px;
+      padding:12px; color:var(--muted); font-size:14px; line-height:1.65; max-height:340px; overflow:auto;
+    }
+    .divider{ height:1px; background:rgba(255,255,255,.10); margin:14px 0; }
+    .speakBtn{
+      border:1px solid rgba(66,211,255,.35); background:rgba(66,211,255,.14); color:var(--text);
+      padding:10px 14px; border-radius:999px; cursor:pointer; font-size:14px;
+    }
+    .speakBtn:hover{ background:rgba(66,211,255,.20); }
+    .tag{
+      display:inline-block; padding:4px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06); color:var(--muted); font-size:12px; margin-left:8px;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo"><img src="logo.png" alt="GA Logo"></div>
+      <div class="titleblock">
+        <h1>Unit 10 – Week 26: Online Practice</h1>
+        <div class="sub">Listening Vocabulary + Words in Context + Cloze + Phrasal Verbs</div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="pill">Progress: <strong id="progress">1/19</strong></div>
+      <div class="pill">Score: <strong id="score">0</strong></div>
+      <div class="pill">Mode: <strong id="mode">Main</strong></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="cardHeader">
+        <div class="kicker">
+          <div class="sectionLabel" id="sectionLabel">Part: Listening Vocabulary</div>
+          <div class="qMeta" id="qMeta">Question 1 of 19</div>
+        </div>
+        <div class="hintBox">
+          <strong>How to play:</strong>
+          <ul style="margin:8px 0 0; padding-left:18px;">
+            <li><strong>Listening Vocabulary</strong>: click the speaker, listen to the definition, then choose the correct word.</li>
+            <li><strong>Cloze</strong>: choose the best word to complete the sentence.</li>
+            <li><strong>Phrasal Verbs</strong>: choose the best phrasal verb.</li>
+            <li>Wrong answers will come back at the end for review.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="qText">
+        <div class="prompt" id="promptLine">Listening Vocabulary</div>
+        <div class="main" id="questionText"></div>
+      </div>
+
+      <div style="padding:0 18px 8px;">
+        <button class="speakBtn" id="speakBtn">🔊 Listen</button>
+      </div>
+
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+
+      <div class="controls">
+        <div class="leftControls">
+          <button class="btn" id="restartBtn">Restart</button>
+          <button class="btn" id="hintBtn">Hint</button>
+        </div>
+        <button class="btn primary" id="nextBtn" disabled>Next</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="side">
+        <h3>Quick Word List <span class="tag">Unit 10</span></h3>
+        <div class="small">Target words from the unit and words in context.</div>
+        <div class="listBox">
+          citizens<br>
+          volunteers<br>
+          mayor<br>
+          assistant<br>
+          city council<br>
+          city hall<br>
+          president<br>
+          garbage collectors<br>
+          equipment<br>
+          news conference<br>
+          playground<br>
+          contest<br>
+          ribbon<br>
+          speech<br>
+          members<br><br>
+          <strong>Phrasal verbs:</strong><br>
+          take over<br>
+          take in<br>
+          take apart<br>
+          take down
+        </div>
+        <div class="divider"></div>
+        <div class="small"><strong>Reading skill link:</strong> understanding words in context and using vocabulary in sentences.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {section:'Listening Vocabulary', prompt:'Listen to the definition and choose the correct word.', speech:'The person who leads a city government.', text:'Choose the word that matches the definition.', options:['mayor','citizens','assistant','ribbon'], answer:0, hint:'This person is the head of a city.'},
+  {section:'Listening Vocabulary', prompt:'Listen to the definition and choose the correct word.', speech:'People who help without being paid.', text:'Choose the word that matches the definition.', options:['members','volunteers','equipment','speech'], answer:1, hint:'They help for free.'},
+  {section:'Listening Vocabulary', prompt:'Listen to the definition and choose the correct word.', speech:'People who live in a city or country.', text:'Choose the word that matches the definition.', options:['citizens','contest','playground','assistant'], answer:0, hint:'They are the people of the place.'},
+  {section:'Listening Vocabulary', prompt:'Listen to the definition and choose the correct word.', speech:'A person who helps another person with work.', text:'Choose the word that matches the definition.', options:['assistant','city hall','president','equipment'], answer:0, hint:'This person helps someone else do a job.'},
+  {section:'Listening Vocabulary', prompt:'Listen to the definition and choose the correct word.', speech:'A group of people who help make decisions for a city.', text:'Choose the word that matches the definition.', options:['city council','ribbon','contest','members'], answer:0, hint:'This is a decision-making group in a city.'},
+  {section:'Listening Vocabulary', prompt:'Listen to the definition and choose the correct word.', speech:'The main building for city government.', text:'Choose the word that matches the definition.', options:['city hall','playground','news conference','speech'], answer:0, hint:'This is an important government building.'},
+  {section:'Listening Vocabulary', prompt:'Listen to the definition and choose the correct word.', speech:'The leader of a country or organization.', text:'Choose the word that matches the definition.', options:['president','mayor','garbage collectors','assistant'], answer:0, hint:'This is a very important leader.'},
+  {section:'Listening Vocabulary', prompt:'Listen to the definition and choose the correct word.', speech:'Workers who pick up trash in a city.', text:'Choose the word that matches the definition.', options:['garbage collectors','citizens','volunteers','members'], answer:0, hint:'These workers collect trash.'},
+  {section:'Listening Vocabulary', prompt:'Listen to the definition and choose the correct word.', speech:'Tools and machines used for a job.', text:'Choose the word that matches the definition.', options:['equipment','contest','speech','ribbon'], answer:0, hint:'Workers use these things to do their work.'},
+  {section:'Listening Vocabulary', prompt:'Listen to the definition and choose the correct word.', speech:'A meeting where reporters ask questions and hear news.', text:'Choose the word that matches the definition.', options:['news conference','city hall','playground','assistant'], answer:0, hint:'Reporters go here to hear important news.'},
+  {section:'Listening Vocabulary', prompt:'Listen to the definition and choose the correct word.', speech:'A place where children go to play.', text:'Choose the word that matches the definition.', options:['playground','members','city council','equipment'], answer:0, hint:'Children play there.'},
+  {section:'Listening Vocabulary', prompt:'Listen to the definition and choose the correct word.', speech:'A competition that people try to win.', text:'Choose the word that matches the definition.', options:['contest','ribbon','speech','citizens'], answer:0, hint:'People enter this and try to win.'},
+  {section:'Listening Vocabulary', prompt:'Listen to the definition and choose the correct word.', speech:'A strip of material used for prizes or ceremonies.', text:'Choose the word that matches the definition.', options:['ribbon','assistant','equipment','mayor'], answer:0, hint:'It is often cut at an opening ceremony.'},
+  {section:'Listening Vocabulary', prompt:'Listen to the definition and choose the correct word.', speech:'A talk given to an audience.', text:'Choose the word that matches the definition.', options:['speech','members','city hall','volunteers'], answer:0, hint:'Someone gives this when speaking in front of people.'},
+  {section:'Listening Vocabulary', prompt:'Listen to the definition and choose the correct word.', speech:'People who belong to a group.', text:'Choose the word that matches the definition.', options:['members','contest','playground','president'], answer:0, hint:'They are part of the group.'},
+
+  {section:'Cloze', prompt:'Choose the best word to complete the sentence.', speech:'The city council discussed plans for a new playground.', text:'The ______ discussed plans for a new playground.', options:['city council','ribbon','contest','speech'], answer:0, hint:'This group helps make city decisions.'},
+  {section:'Cloze', prompt:'Choose the best word to complete the sentence.', speech:'The mayor gave a speech at city hall.', text:'The mayor gave a ______ at city hall.', options:['contest','speech','equipment','members'], answer:1, hint:'He talked to people.'},
+  {section:'Cloze', prompt:'Choose the best word to complete the sentence.', speech:'The volunteers used equipment to clean the playground.', text:'The volunteers used ______ to clean the playground.', options:['citizens','equipment','ribbon','assistant'], answer:1, hint:'These are tools or machines.'},
+
+  {section:'Phrasal Verbs', prompt:'Choose the best phrasal verb to complete the sentence.', speech:'The vice mayor will take over the job next month.', text:'The vice mayor will ______ the job next month.', options:['take over','take apart','take in','take down'], answer:0, hint:'This means begin controlling or doing the job.'},
+  {section:'Phrasal Verbs', prompt:'Choose the best phrasal verb to complete the sentence.', speech:'I could not take in all the information at the news conference.', text:'I could not ______ all the information at the news conference.', options:['take in','take over','take down','take apart'], answer:0, hint:'This means understand.'},
+  {section:'Phrasal Verbs', prompt:'Choose the best phrasal verb to complete the sentence.', speech:'The worker took apart the broken machine.', text:'The worker ______ the broken machine.', options:['took apart','took over','took in','took down'], answer:0, hint:'This means separated it into pieces.'}
+];
+
+let index = 0, score = 0, allowNext = false, inReview = false, reviewPos = 0, wrongIndexes = [];
+
+const progressEl = document.getElementById('progress');
+const scoreEl = document.getElementById('score');
+const modeEl = document.getElementById('mode');
+const sectionLabelEl = document.getElementById('sectionLabel');
+const qMetaEl = document.getElementById('qMeta');
+const promptLineEl = document.getElementById('promptLine');
+const questionTextEl = document.getElementById('questionText');
+const optionsEl = document.getElementById('options');
+const feedbackEl = document.getElementById('feedback');
+const nextBtn = document.getElementById('nextBtn');
+const restartBtn = document.getElementById('restartBtn');
+const hintBtn = document.getElementById('hintBtn');
+const speakBtn = document.getElementById('speakBtn');
+
+function currentQuestion(){
+  return inReview ? questions[wrongIndexes[reviewPos]] : questions[index];
+}
+
+function setStats(){
+  progressEl.textContent = `${inReview ? reviewPos + 1 : index + 1}/${inReview ? wrongIndexes.length : questions.length}`;
+  scoreEl.textContent = score;
+  modeEl.textContent = inReview ? 'Review' : 'Main';
+}
+
+let speechVoices = [];
+function loadVoices(){
+  speechVoices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+}
+loadVoices();
+if(window.speechSynthesis && 'onvoiceschanged' in window.speechSynthesis){
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+function pickAmericanVoice(){
+  if(!speechVoices || !speechVoices.length) return null;
+  return speechVoices.find(v => /Google US English/i.test(v.name)) ||
+         speechVoices.find(v => /Microsoft Aria/i.test(v.name)) ||
+         speechVoices.find(v => /Jenny/i.test(v.name) && /en-US/i.test(v.lang)) ||
+         speechVoices.find(v => /Guy/i.test(v.name) && /en-US/i.test(v.lang)) ||
+         speechVoices.find(v => /Samantha/i.test(v.name)) ||
+         speechVoices.find(v => /^en-US$/i.test(v.lang)) ||
+         speechVoices.find(v => /English \(United States\)/i.test(v.name)) || null;
+}
+
+function formatForSpeech(txt){
+  return `Listen carefully. ${txt.replace(/\./g,'...')} ... Think. What is the answer?`;
+}
+
+function speakText(txt){
+  if(!window.speechSynthesis) return;
+  loadVoices();
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(formatForSpeech(txt));
+  const voice = pickAmericanVoice();
+  if(voice) u.voice = voice;
+  u.lang = (voice && voice.lang) ? voice.lang : 'en-US';
+  u.rate = 0.88;
+  u.pitch = 1.04;
+  u.volume = 1;
+  window.speechSynthesis.speak(u);
+}
+
+function render(){
+  const q = currentQuestion();
+  sectionLabelEl.textContent = `Part: ${q.section}`;
+  qMetaEl.textContent = inReview ? `Review ${reviewPos + 1} of ${wrongIndexes.length}` : `Question ${index + 1} of ${questions.length}`;
+  promptLineEl.textContent = q.section;
+  questionTextEl.innerHTML = `<div class="prompt">${q.prompt}</div><div class="main">${q.text}</div>`;
+  optionsEl.innerHTML = '';
+
+  q.options.forEach((opt, i) => {
+    const b = document.createElement('button');
+    b.className = 'optBtn';
+    b.textContent = opt;
+    b.onclick = () => choose(i);
+    optionsEl.appendChild(b);
+  });
+
+  feedbackEl.className = 'feedback';
+  feedbackEl.textContent = '';
+  allowNext = false;
+  nextBtn.disabled = true;
+  setStats();
+  speakBtn.onclick = () => speakText(q.speech);
+}
+
+function choose(i){
+  const q = currentQuestion();
+  [...optionsEl.children].forEach(b => b.disabled = true);
+
+  if(i === q.answer){
+    if(!inReview) score += 1;
+    feedbackEl.className = 'feedback good';
+    feedbackEl.textContent = 'Correct. Good work.';
+    allowNext = true;
+    nextBtn.disabled = false;
+    setStats();
+  } else {
+    feedbackEl.className = 'feedback bad';
+    feedbackEl.textContent = `Not quite. Hint: ${q.hint}`;
+    if(!inReview && !wrongIndexes.includes(index)) wrongIndexes.push(index);
+    [...optionsEl.children][q.answer].style.borderColor = 'rgba(67,241,138,.8)';
+    [...optionsEl.children][q.answer].style.background = 'rgba(67,241,138,.12)';
+  }
+}
+
+function next(){
+  if(!allowNext) return;
+
+  if(!inReview){
+    index++;
+    if(index < questions.length) return render();
+    if(wrongIndexes.length){
+      inReview = true;
+      reviewPos = 0;
+      return render();
+    }
+    return finish();
+  } else {
+    reviewPos++;
+    if(reviewPos < wrongIndexes.length) return render();
+    return finish();
+  }
+}
+
+function finish(){
+  sectionLabelEl.textContent = 'Finished';
+  qMetaEl.textContent = 'All done';
+  promptLineEl.textContent = 'Summary';
+
+  const missed = [...new Set(wrongIndexes.map(i => questions[i].options[questions[i].answer]))];
+  questionTextEl.innerHTML = `<div class="main">You finished Unit 10.<br><br><strong>Your score:</strong> ${score} / ${questions.length}.${missed.length ? `<br><br><strong>Review these words:</strong><br>${missed.join(', ')}` : '<br><br><strong>Excellent work.</strong>'}</div>`;
+  optionsEl.innerHTML = '';
+  feedbackEl.textContent = '';
+  nextBtn.disabled = true;
+}
+
+function restart(){
+  index = 0;
+  score = 0;
+  allowNext = false;
+  inReview = false;
+  reviewPos = 0;
+  wrongIndexes = [];
+  render();
+}
+
+nextBtn.addEventListener('click', next);
+restartBtn.addEventListener('click', restart);
+hintBtn.addEventListener('click', () => {
+  const q = currentQuestion();
+  feedbackEl.className = 'feedback warn';
+  feedbackEl.textContent = `Hint: ${q.hint}`;
+});
+
+render();
+</script>
+</body>
+</html>
